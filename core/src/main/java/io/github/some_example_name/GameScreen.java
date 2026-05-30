@@ -613,15 +613,15 @@ public class GameScreen extends ScreenAdapter {
                     // Animasi kematian musuh selesai, lanjutkan dengan reward dan spawn musuh baru
                     player.addScore(currentEnemy.getGoldDrop());
                     System.out.println("Enemy defeated! Spawning new enemy.");
-                    progress += 0.05f;
+                    progress += 0.1f;
 
                     // Drop item (HealthPotion atau Weapon)
-                    if (MathUtils.random.nextFloat() < 0.4f) {
+                    if (MathUtils.random.nextFloat() < 0.5f) {
                         HealthPotion newPotion = new HealthPotion();
                         player.addHealthPotion(newPotion);
                         System.out.println("You found a Health Potion!");
                     }
-                    if (MathUtils.random.nextFloat() < 0.15f) {
+                    if (MathUtils.random.nextFloat() < 0.2f) {
                         Weapon droppedWeapon;
                         float weaponchance = MathUtils.random.nextFloat();
                         if (weaponchance < 0.01f) {
@@ -663,11 +663,11 @@ public class GameScreen extends ScreenAdapter {
                         if (progress >= 1f) {
                             currentEnemy = new Wizard("characters/wizard/");
                             progress = 0f;
-                        } else if (enemySpawnChance < 0.4f) {
+                        } else if (enemySpawnChance < 0.5f) {
                             currentEnemy = new Goblin("characters/goblin/");
-                        } else if (enemySpawnChance < 0.8f) {
+                        } else if (enemySpawnChance < 0.75f) {
                             currentEnemy = new Ogre("characters/ogre/");
-                        } else if (enemySpawnChance < 0.98f) {
+                        } else if (enemySpawnChance < 0.9f) {
                             currentEnemy = new Dragon("characters/dragon/");
                         } else {
                             currentEnemy = new Wizard("characters/wizard/");
