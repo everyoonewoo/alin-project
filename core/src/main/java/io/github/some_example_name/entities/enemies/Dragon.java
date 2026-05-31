@@ -15,7 +15,7 @@ public class Dragon extends Enemy { // Inheritance: Dragon IS A Enemy (Boss)
             basePath + "Attack.png", 8, 1, 0.1f, // frameCols Attack = 8, sesuai yang Anda berikan terakhir
             basePath + "Hit.png", 4, 1, 0.15f,  // frameCols Hit = 4, sesuai yang Anda berikan terakhir
             basePath + "Death.png", 4, 1, 0.15f, // BARU: Death Animation (contoh: 6 frames, 1 row, 0.15s per frame)
-            500, 500);
+            475, 475);
         System.out.println("Dragon (Mini Boss) spawned!");
     }
 }

@@ -11,11 +11,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.graphics.g2d.BitmapFont; // BARU: Import BitmapFont
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator; // BARU: Import FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 // UI Imports
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -23,26 +22,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 
-// Import kelas-kelas OOP Anda
+// Import kelas-kelas OOP
 import io.github.some_example_name.entities.GameEntity;
 import io.github.some_example_name.entities.Player;
 import io.github.some_example_name.entities.enemies.*;
 import io.github.some_example_name.items.weapons.*;
 import io.github.some_example_name.tiles.Tile;
 import io.github.some_example_name.effects.tile.TileEffect;
-import io.github.some_example_name.effects.tile.BonusDamageEffect;
 import io.github.some_example_name.utils.WordCalculator;
 import io.github.some_example_name.utils.WordDictionary;
 import io.github.some_example_name.utils.GameBoard;
-import io.github.some_example_name.items.potions.HealthPotion; // BARU: Import HealthPotion
-import io.github.some_example_name.items.Item; // BARU: Import kelas Item
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane; // BARU: Import ScrollPane
-import java.util.List;
-import java.util.Collections;
+import io.github.some_example_name.items.potions.HealthPotion;
+import io.github.some_example_name.items.Item;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 
 public class GameScreen extends ScreenAdapter {
+    // Kunci ukuran virtual kanvas game (Membasmi masalah tumpang tindih)
+    private static final float V_WIDTH = 1000f;
+    private static final float V_HEIGHT = 800f;
+
     final BookwormGame game;
     OrthographicCamera camera;
     SpriteBatch batch;
@@ -68,12 +67,12 @@ public class GameScreen extends ScreenAdapter {
     private Skin skin;
     private TextButton submitButton;
     private TextButton clearButton;
-    private TextButton usePotionButton; // BARU: Tombol untuk menggunakan potion
-    private GlyphLayout potionCountLayout; // BARU: Untuk menampilkan jumlah potion
-    private TextButton backpackButton; // BARU: Tombol untuk membuka backpack
-    private boolean isBackpackOpen = false; // BARU: State untuk backpack
-    private com.badlogic.gdx.scenes.scene2d.ui.Window backpackWindow; // BARU: Jendela backpack
-    private com.badlogic.gdx.scenes.scene2d.ui.Table inventoryTable; // BARU: Tabel di dalam jendela
+    private TextButton usePotionButton;
+    private GlyphLayout potionCountLayout;
+    private TextButton backpackButton;
+    private boolean isBackpackOpen = false;
+    private com.badlogic.gdx.scenes.scene2d.ui.Window backpackWindow;
+    private com.badlogic.gdx.scenes.scene2d.ui.Table inventoryTable;
     private ScrollPane inventoryScrollPane;
     private BitmapFont tileFont;
 
@@ -82,7 +81,7 @@ public class GameScreen extends ScreenAdapter {
 
     private Texture backgroundImage;
     private Music backgroundMusic;
-    private Sound playerHitSound; // BARU: Sound effect ketika player terkena hit
+    private Sound playerHitSound;
     private Sound playerDeathSound;
     private Sound playerAttackSound;
 
@@ -93,15 +92,15 @@ public class GameScreen extends ScreenAdapter {
     private float progress = 0f;
 
     private enum BattleState {
-        PLAYER_INPUT,           // Menunggu input kata dari player
-        PLAYER_ATTACK_ANIMATION, // Animasi serangan player sedang berlangsung
-        ENEMY_HIT_ANIMATION,    // Animasi musuh terkena serangan sedang berlangsung
-        ENEMY_TURN_ATTACK_ANIMATION, // Animasi serangan musuh sedang berlangsung
-        PLAYER_HIT_ANIMATION,   // Animasi player terkena serangan sedang berlangsung
-        ENEMY_DYING_ANIMATION, // BARU: State untuk animasi kematian musuh
-        PLAYER_DYING_ANIMATION, // BARU: State untuk animasi kematian player
-        CHECK_ROUND_END,        // Mengecek apakah ada yang mati, ganti musuh, dll.
-        GAME_OVER_SCREEN        // Game berakhir
+        PLAYER_INPUT,
+        PLAYER_ATTACK_ANIMATION,
+        ENEMY_HIT_ANIMATION,
+        ENEMY_TURN_ATTACK_ANIMATION,
+        PLAYER_HIT_ANIMATION,
+        ENEMY_DYING_ANIMATION,
+        PLAYER_DYING_ANIMATION,
+        CHECK_ROUND_END,
+        GAME_OVER_SCREEN
     }
     private BattleState currentBattleState;
 
@@ -111,14 +110,15 @@ public class GameScreen extends ScreenAdapter {
 
         WordDictionary.loadDictionary();
 
+        // Diperbaiki: Kamera disamakan dengan ukuran dasar kanvas game (1000x800)
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 600);
+        camera.setToOrtho(false, V_WIDTH, V_HEIGHT);
 
-        gridStartX = (1000 - (gridCols * tileSize)) / 2;
-        gridStartY = (800 - (gridRows * tileSize)) / 2;
+        gridStartX = (V_WIDTH - (gridCols * tileSize)) / 2;
+        gridStartY = (V_HEIGHT - (gridRows * tileSize)) / 2;
 
         player = new Player("characters/player/");
-        player.equipWeapon(new BasicSword()); // Set initial weapon
+        player.equipWeapon(new BasicSword());
 
         currentEnemy = new Goblin("characters/goblin/");
         enemyHitSound = Gdx.audio.newSound(Gdx.files.internal("characters/goblin/goblin_hit.mp3"));
@@ -127,50 +127,44 @@ public class GameScreen extends ScreenAdapter {
 
         defaultTileTextureRegion = game.getTileTextureRegion();
 
-        enemyX = 629;
-        enemyY = 450;
+        // Diperbaiki: Posisi musuh digeser agar pas di dalam frame kanan bawah
+        enemyX = 650f;
+        enemyY = 415f;
 
-        backgroundImage = new Texture(Gdx.files.internal("background.jpg")); // Sesuaikan path ini
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background_music.mp3")); // Sesuaikan path ini
-        backgroundMusic.setLooping(true); // Atur agar musik berulang
-        backgroundMusic.setVolume(0.25f); // Atur volume (0.0 - 1.0)
+        backgroundImage = new Texture(Gdx.files.internal("background.jpg"));
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background_music.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.setVolume(0.25f);
         backgroundMusic.play();
 
-        playerHitSound = Gdx.audio.newSound(Gdx.files.internal("characters/player/player_hit.wav")); // BARU: Muat sound effect
-        playerDeathSound = Gdx.audio.newSound(Gdx.files.internal("characters/player/death.wav")); //
+        playerHitSound = Gdx.audio.newSound(Gdx.files.internal("characters/player/player_hit.wav"));
+        playerDeathSound = Gdx.audio.newSound(Gdx.files.internal("characters/player/death.wav"));
         playerAttackSound = Gdx.audio.newSound(Gdx.files.internal("characters/player/player_attack.mp3"));
 
-
-        // --- BARU: Inisialisasi tileFont ---
-        // Ganti "fonts/your_tile_font.ttf" dengan jalur font yang Anda inginkan
-        // Anda bisa mencoba "fonts/pixel_font.ttf" yang sudah ada jika ingin font berbeda dari UI
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/tile_font.ttf")); // Sesuaikan path font
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/tile_font.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 32; // Ukuran font, sesuaikan agar pas di bucket
-        parameter.color = Color.BLACK; // Warna huruf, sesuaikan agar terlihat di bucket (atau WHITE)
-        // Opsional: tambahkan outline untuk font
-        // parameter.borderColor = Color.WHITE;
-        // parameter.borderWidth = 1;
+        parameter.size = 32;
+        parameter.color = Color.BLACK;
         tileFont = generator.generateFont(parameter);
-        generator.dispose(); // Generator harus di-dispose setelah membuat font
-        // --- AKHIR BARU ---
+        generator.dispose();
 
-        // Inisialisasi papan awal
         initializeNewBoard();
 
         selectedTiles = new Array<>();
         currentWord = "";
 
         glyphLayout = new GlyphLayout();
-        potionCountLayout = new GlyphLayout(); // BARU: Inisialisasi untuk hitungan potion
+        potionCountLayout = new GlyphLayout();
 
+        // Diperbaiki: Menggunakan viewport utama game agar ikut membesar ke tengah
         stage = new Stage(game.viewport, batch);
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         skin.add("default-font", game.font);
 
+        // --- TOMBOL SUBMIT (Diatur presisi di bawah grid) ---
         submitButton = new TextButton("SUBMIT", skin);
-        submitButton.setSize(100, 50);
-        submitButton.setPosition(gridStartX + gridCols * tileSize / 2 - submitButton.getWidth() - 10, gridStartY - submitButton.getHeight() - 10);
+        submitButton.setSize(120, 45);
+        submitButton.setPosition(V_WIDTH / 2f - 130f, 50f);
         submitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -179,9 +173,10 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(submitButton);
 
+        // --- TOMBOL CLEAR ---
         clearButton = new TextButton("CLEAR", skin);
-        clearButton.setSize(100, 50);
-        clearButton.setPosition(gridStartX + gridCols * tileSize / 2 + 10, gridStartY - clearButton.getHeight() - 10);
+        clearButton.setSize(120, 45);
+        clearButton.setPosition(V_WIDTH / 2f + 10f, 50f);
         clearButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -190,35 +185,29 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(clearButton);
 
-        // BARU: Tombol untuk menggunakan Health Potion
+        // --- TOMBOL USE POTION (Pojok Kiri Atas) ---
         usePotionButton = new TextButton("Use Potion", skin);
-        usePotionButton.setSize(120, 50);
-        usePotionButton.setPosition(50, Gdx.graphics.getHeight() - 100);
+        usePotionButton.setSize(120, 45);
+        usePotionButton.setPosition(30f, V_HEIGHT - 75f);
         usePotionButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Saat tombol ini diklik, cukup panggil useHealthPotion() di Player
                 player.useHealthPotion();
-                // Setelah digunakan, update konten backpack jika terbuka,
-                // karena jumlah potion bisa berubah
                 if (isBackpackOpen) {
                     updateBackpackContent();
                 }
             }
         });
         stage.addActor(usePotionButton);
-        // AKHIR BARU
 
-        // ... (existing clearButton and usePotionButton setup)
-
-        // BARU: Tombol Backpack
+        // --- TOMBOL BACKPACK (Di bawah tombol potion) ---
         backpackButton = new TextButton("Backpack", skin);
-        backpackButton.setSize(120, 50);
-        backpackButton.setPosition(50, Gdx.graphics.getHeight() - 170); // Posisikan di bawah tombol potion
+        backpackButton.setSize(120, 45);
+        backpackButton.setPosition(30f, V_HEIGHT - 130f);
         backpackButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                isBackpackOpen = !isBackpackOpen; // Toggle state backpack
+                isBackpackOpen = !isBackpackOpen;
                 if (isBackpackOpen) {
                     openBackpack();
                 } else {
@@ -228,26 +217,22 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(backpackButton);
 
-        // BARU: Inisialisasi jendela backpack
+        // --- WINDOW BACKPACK ---
         backpackWindow = new com.badlogic.gdx.scenes.scene2d.ui.Window("Backpack", skin);
-        backpackWindow.setSize(300, 400); // Ukuran jendela
-        backpackWindow.setPosition(Gdx.graphics.getWidth() / 2 - backpackWindow.getWidth() / 2, Gdx.graphics.getHeight() / 2 - backpackWindow.getHeight() / 2);
-        backpackWindow.setVisible(false); // Sembunyikan secara default
-        backpackWindow.setModal(true); // Membuatnya modal agar input lain terblokir
-        backpackWindow.setMovable(true); // Bisa dipindah
+        backpackWindow.setSize(320, 420);
+        backpackWindow.setPosition(V_WIDTH / 2f - 160f, V_HEIGHT / 2f - 210f);
+        backpackWindow.setVisible(false);
+        backpackWindow.setModal(true);
+        backpackWindow.setMovable(true);
         stage.addActor(backpackWindow);
 
         inventoryTable = new com.badlogic.gdx.scenes.scene2d.ui.Table(skin);
-//        inventoryTable.setFillParent(true); // Mengisi seluruh jendela
-        // BARU: Buat ScrollPane dan bungkus inventoryTable di dalamnya
         inventoryScrollPane = new ScrollPane(inventoryTable, skin);
-        inventoryScrollPane.setFadeScrollBars(false); // Agar scrollbar selalu terlihat
-        inventoryScrollPane.setScrollingDisabled(true, false); // Hanya scroll vertikal
+        inventoryScrollPane.setFadeScrollBars(false);
+        inventoryScrollPane.setScrollingDisabled(true, false);
 
-        // Tambahkan ScrollPane ke backpackWindow, bukan inventoryTable langsung
-        backpackWindow.add(inventoryScrollPane).expand().fill().row(); // Penting: .row() setelahnya
+        backpackWindow.add(inventoryScrollPane).expand().fill().row();
 
-        // Tambahkan tombol Close ke jendela backpack
         TextButton closeBackpackButton = new TextButton("Close", skin);
         closeBackpackButton.addListener(new ClickListener() {
             @Override
@@ -255,37 +240,27 @@ public class GameScreen extends ScreenAdapter {
                 closeBackpack();
             }
         });
-        backpackWindow.add(closeBackpackButton).width(80).height(30).padBottom(10).center(); // Tambahkan tombol close
-
-        // Gdx.input.setInputProcessor(new com.badlogic.gdx.InputMultiplexer(stage, new TileInputProcessor(this))); // Tetap seperti ini
+        backpackWindow.add(closeBackpackButton).width(80).height(30).padBottom(10).center();
 
         currentBattleState = BattleState.PLAYER_INPUT;
-
         Gdx.input.setInputProcessor(new com.badlogic.gdx.InputMultiplexer(stage, new TileInputProcessor(this)));
     }
 
-    // BARU: Metode untuk membuka backpack
     private void openBackpack() {
         isBackpackOpen = true;
         backpackWindow.setVisible(true);
-        updateBackpackContent(); // Perbarui isi setiap kali dibuka
-        // Blokir input lain saat backpack terbuka
+        updateBackpackContent();
         Gdx.input.setInputProcessor(stage);
     }
 
-    // BARU: Metode untuk menutup backpack
     private void closeBackpack() {
         isBackpackOpen = false;
         backpackWindow.setVisible(false);
-        // Kembalikan input processor ke multiplexer
         Gdx.input.setInputProcessor(new com.badlogic.gdx.InputMultiplexer(stage, new TileInputProcessor(this)));
     }
 
-    // BARU: Metode untuk memperbarui isi backpack
     private void updateBackpackContent() {
-        inventoryTable.clearChildren(); // Hapus item lama
-
-        // Tambahkan label header
+        inventoryTable.clearChildren();
         inventoryTable.add("Your Items:").colspan(2).padBottom(10).row();
 
         if (player.getInventory().size == 0) {
@@ -294,25 +269,16 @@ public class GameScreen extends ScreenAdapter {
             for (final Item item : player.getInventory()) {
                 inventoryTable.add(item.getName()).pad(5);
 
-                // Tambahkan tombol "Use" atau "Equip"
                 TextButton actionButton = new TextButton("Use/Equip", skin);
                 actionButton.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        // --- BARU: Logika penggunaan item dari backpack ---
                         if (item instanceof HealthPotion) {
-                            // Jika item adalah HealthPotion, panggil metode useHealthPotion() dari player
-                            // Metode ini akan menangani penyembuhan DAN penghapusan dari inventaris
                             player.useHealthPotion();
                         } else if (item instanceof Weapon) {
-                            // Jika item adalah Weapon, panggil interact() pada weapon tersebut
-                            // Ini akan melengkapi senjata (tidak menghapus dari inventaris)
                             item.interact(player);
                         }
-                        // Anda bisa menambahkan logika 'else if' untuk tipe Item lain di sini
-
-                        updateBackpackContent(); // Perbarui tampilan backpack setelah item digunakan/dilengkapi
-                        // Juga pastikan tampilan jumlah potion diperbarui (ini akan terjadi saat render berikutnya)
+                        updateBackpackContent();
                     }
                 });
                 inventoryTable.add(actionButton).width(80).height(30).pad(5).row();
@@ -325,10 +291,6 @@ public class GameScreen extends ScreenAdapter {
             gameBoard.dispose();
         }
         gameBoard = new GameBoard(gridRows, gridCols, tileSize, gridStartX, gridStartY, defaultTileTextureRegion);
-
-//        List<String> solutions = gameBoard.findAllValidWords();
-//        Collections.sort(solutions);
-//        Gdx.app.log("GameScreen", "Initial Board Solutions: " + solutions);
     }
 
     public Array<Tile> getSelectedTiles() {
@@ -340,20 +302,16 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void handleTileClick(Tile clickedTile) {
-        if (currentBattleState != BattleState.PLAYER_INPUT) {
-            // Jangan izinkan pemilihan tile jika bukan dalam state PLAYER_INPUT
-            return;
-        }
+        if (currentBattleState != BattleState.PLAYER_INPUT) return;
+
         if (selectedTiles.size == 0) {
             selectedTiles.add(clickedTile);
             currentWord += clickedTile.getLetter();
-            System.out.println("Selected: " + currentWord);
         } else {
             Tile lastTile = selectedTiles.peek();
             if (isAdjacent(lastTile, clickedTile) && !selectedTiles.contains(clickedTile, true)) {
                 selectedTiles.add(clickedTile);
                 currentWord += clickedTile.getLetter();
-                System.out.println("Selected: " + currentWord);
             } else if (selectedTiles.contains(clickedTile, true)) {
                 int index = selectedTiles.indexOf(clickedTile, true);
                 if (index != selectedTiles.size - 1) {
@@ -361,24 +319,13 @@ public class GameScreen extends ScreenAdapter {
                         selectedTiles.removeIndex(i);
                     }
                     currentWord = "";
-                    for (Tile t : selectedTiles) {
-                        currentWord += t.getLetter();
-                    }
-                    System.out.println("Deselected. Current: " + currentWord);
+                    for (Tile t : selectedTiles) currentWord += t.getLetter();
                 } else {
                     selectedTiles.removeIndex(selectedTiles.size - 1);
-                    if (selectedTiles.size > 0) {
-                        currentWord = "";
-                        for (Tile t : selectedTiles) {
-                            currentWord += t.getLetter();
-                        }
-                    } else {
-                        currentWord = "";
-                    }
-                    System.out.println("Backspace. Current: " + currentWord);
+                    currentWord = "";
+                    for (Tile t : selectedTiles) currentWord += t.getLetter();
                 }
             } else {
-                System.out.println("Invalid selection. Resetting word and starting new selection.");
                 resetWordSelection();
                 selectedTiles.add(clickedTile);
                 currentWord += clickedTile.getLetter();
@@ -390,44 +337,28 @@ public class GameScreen extends ScreenAdapter {
         int r1 = -1, c1 = -1, r2 = -1, c2 = -1;
         for (int r = 0; r < gameBoard.getGridRows(); r++) {
             for (int c = 0; c < gameBoard.getGridCols(); c++) {
-                if (gameBoard.tileGrid[r][c] == tile1) {
-                    r1 = r; c1 = c;
-                }
-                if (gameBoard.tileGrid[r][c] == tile2) {
-                    r2 = r; c2 = c;
-                }
+                if (gameBoard.tileGrid[r][c] == tile1) { r1 = r; c1 = c; }
+                if (gameBoard.tileGrid[r][c] == tile2) { r2 = r; c2 = c; }
             }
         }
-
         if (r1 == -1 || c1 == -1 || r2 == -1 || c2 == -1) return false;
-
         int dr = Math.abs(r1 - r2);
         int dc = Math.abs(c1 - c2);
-
         return (dr <= 1 && dc <= 1) && (dr != 0 || dc != 0);
     }
 
     public void processWord() {
         if (currentWord.length() < 3) {
-            System.out.println("Word too short: " + currentWord + ". Minimum 3 letters required. Resetting selection.");
             resetWordSelection();
             return;
         }
 
-        boolean isValidWord = WordDictionary.isValidWord(currentWord);
-
-        if (isValidWord) {
-            System.out.println("Valid word formed: " + currentWord);
-             // Reset seleksi setelah kata valid
-
-            // Mulai sequence serangan player
+        if (WordDictionary.isValidWord(currentWord)) {
             currentBattleState = BattleState.PLAYER_ATTACK_ANIMATION;
             player.setState(GameEntity.CharacterState.ATTACKING);
-            currentEnemy.setState(GameEntity.CharacterState.IDLE); // Pastikan musuh dalam keadaan idle
-            // stateTimer = 0f; // stateTime diupdate otomatis di GameEntity.update()
+            currentEnemy.setState(GameEntity.CharacterState.IDLE);
             playerAttackSound.play(0.25f);
         } else {
-            System.out.println("Invalid word: " + currentWord + ". Try again!");
             resetWordSelection();
         }
     }
@@ -435,20 +366,22 @@ public class GameScreen extends ScreenAdapter {
     private void resetWordSelection() {
         selectedTiles.clear();
         currentWord = "";
-        System.out.println("Word selection reset.");
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
+        Gdx.gl.glClearColor(0.15f, 0.15f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
+        // Sinkronisasi proyeksi kamera kanvas virtual
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
 
-        batch.draw(backgroundImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // 1. Gambar Background pas 1000x800
+        batch.draw(backgroundImage, 0, 0, V_WIDTH, V_HEIGHT);
+
+        // 2. Gambar Grid Board
         for (int r = 0; r < gameBoard.getGridRows(); r++) {
             for (int c = 0; c < gameBoard.getGridCols(); c++) {
                 Tile tile = gameBoard.tileGrid[r][c];
@@ -456,11 +389,8 @@ public class GameScreen extends ScreenAdapter {
                     tile.render(batch, tile.x, tile.y);
 
                     String letterStr = String.valueOf(tile.getLetter());
-                    glyphLayout.setText(tileFont, letterStr); // MODIFIKASI: Gunakan tileFont di sini
-                    float textWidth = glyphLayout.width;
-                    float textHeight = glyphLayout.height;
-                    // MODIFIKASI: Gunakan tileFont untuk menggambar huruf
-                    tileFont.draw(batch, letterStr, tile.x + (tile.width - textWidth) / 2, tile.y + (tile.height + textHeight) / 2);
+                    glyphLayout.setText(tileFont, letterStr);
+                    tileFont.draw(batch, letterStr, tile.x + (tile.width - glyphLayout.width) / 2, tile.y + (tile.height + glyphLayout.height) / 2);
 
                     if (selectedTiles.contains(tile, true)) {
                         batch.setColor(Color.YELLOW.cpy().mul(0.7f));
@@ -473,66 +403,76 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
-        player.render(batch, -160, -80);
-        game.font.draw(batch, "Player HP: " + player.getHealth() + "/" + player.getMaxHealth(), 20, 80);
-        game.font.draw(batch, "Player Score: " + player.getScore(), 20, 60);
-        game.font.draw(batch, "Equipped: " + player.getEquippedWeapon().getName(), 20, 40);
+        // 3. Diperbaiki: Gambar Player & Status Teks di Kiri Bawah (Masuk Frame, Ga Minus Lagi)
+        player.render(batch, -130f, -30f);
+        game.font.draw(batch, "Player HP: " + player.getHealth() + "/" + player.getMaxHealth(), 20f, 100f);
+        game.font.draw(batch, "Score: " + player.getScore(), 20f, 75f);
+        game.font.draw(batch, "Weapon: " + player.getEquippedWeapon().getName(), 20f, 50f);
 
-        // BARU: Tampilkan jumlah Health Potion
+        // Potion Text ditaruh rapi di bawah tombol Backpack (Pojok kiri atas)
         String potionText = "Potions: " + player.getHealthPotions();
-        potionCountLayout.setText(game.font, potionText);
-        // Posisikan teks di bawah tombol "Use Potion"
-        game.font.draw(batch, potionText, usePotionButton.getX() + (usePotionButton.getWidth() - potionCountLayout.width) / 2, usePotionButton.getY() - potionCountLayout.height - 5);
-        // AKHIR BARU
+        game.font.draw(batch, potionText, 30f, V_HEIGHT - 150f);
 
+        // 4. Diperbaiki: Gambar Enemy & Status Teks di Kanan Bawah (Ga Tumpat)
+        // ====================================================================
+        // 4. GAMBAR ENEMY & TEKS STATUS (Dinamis Mengikuti Lebar Sprite Musuh)
+        // ====================================================================
         if (currentEnemy.getCurrentState() != GameEntity.CharacterState.DYING || !currentEnemy.getCurrentPlayingAnimation().isAnimationFinished(currentEnemy.getStateTime())) {
+            // 1. Tetap gambar karakter musuh di pojok kanan atas
             currentEnemy.render(batch, enemyX, enemyY);
-            game.font.draw(batch, currentEnemy.getClass().getSimpleName() + " HP: " + currentEnemy.getHealth() + "/" + currentEnemy.getMaxHealth(), 789,595);
+
+            // 2. HITUNG TITIK TENGAH SECARA OTOMATIS BERDASARKAN LEBAR SPRITE MUSUH
+            // Rumus: Titik X musuh + (Lebar display asli musuh / 2)
+            // Cara ini menjamin tipe musuh sekecil Dragon atau seramping Ogre akan memiliki pusat yang pas!
+            float enemyCenterX = enemyX + (475f / 2f);
+
+            // 3. Teks Baris 1: Nama Musuh
+            String enemyNameText = "Enemy Name: " + currentEnemy.getClass().getSimpleName();
+            glyphLayout.setText(game.font, enemyNameText); // Mengukur panjang teks nama musuh
+            float nameX = enemyCenterX - (glyphLayout.width / 2f); // Geser ke kiri setengah dari panjang teks
+            game.font.draw(batch, enemyNameText, nameX, 755f); // Dinaikkan sedikit ke Y=755f agar ada jarak dari kepala
+
+            // 4. Teks Baris 2: HP Musuh
+            String enemyHPText = "HP: " + currentEnemy.getHealth() + "/" + currentEnemy.getMaxHealth();
+            glyphLayout.setText(game.font, enemyHPText); // Mengukur panjang teks HP musuh
+            float hpX = enemyCenterX - (glyphLayout.width / 2f); // Geser ke kiri setengah dari panjang teks
+            game.font.draw(batch, enemyHPText, hpX, 730f); // Ditata tepat di bawah nama musuh (Y=730f)
+
         } else {
-            // Opsional: Tampilkan "Enemy Defeated!" atau hapus dari layar sepenuhnya
-            game.font.draw(batch, "Enemy Defeated!", enemyX, enemyY + 110);
+            // Jika musuh mati, teks "Enemy Defeated!" juga otomatis berada di tengah kepala tempat musuh berdiri
+            float enemyCenterX = enemyX + (475f / 2f);
+            String defeatedText = "Enemy Defeated!";
+            glyphLayout.setText(game.font, defeatedText);
+            float defeatedX = enemyCenterX - (glyphLayout.width / 2f);
+            game.font.draw(batch, defeatedText, defeatedX, 755f);
         }
 
-        // --- POSISI "Current Word:" (KIRI ATAS) ---
-//        String currentWordText = "Current Word: " + currentWord;
-//        glyphLayout.setText(game.font, currentWordText);
-//        float currentWordTextX = 10;
-//        float currentWordTextY = Gdx.graphics.getHeight() - 20;
-//
-//        game.font.draw(batch, currentWordText, currentWordTextX, currentWordTextY);
-        // --- AKHIR POSISI "Current Word:" ---
-
-        // --- POSISI "Current Word:" (Tengah) ---
+        // 5. Diperbaiki: Teks Current Word ditaruh pas di atas tombol SUBMIT & CLEAR
         String currentWordText = "Current Word: " + currentWord;
         glyphLayout.setText(game.font, currentWordText);
-        float currentWordTextWidth = glyphLayout.width;
-        float currentWordTextX = (Gdx.graphics.getWidth() - currentWordTextWidth) / 2;
-        float currentWordTextY = gridStartY + gridRows * tileSize + 20 + usePotionButton.getHeight() + 10 + 20;
+        game.font.draw(batch, currentWordText, (V_WIDTH - glyphLayout.width) / 2f, 735);
 
-        game.font.draw(batch, currentWordText, currentWordTextX, currentWordTextY);
         batch.end();
 
+        // 6. Render UI Tombol Stage
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
+        // Logic Update State Game (Tetap asli)
         player.update(Gdx.graphics.getDeltaTime());
-        if (currentEnemy != null) { // Tambahkan null check
+        if (currentEnemy != null) {
             currentEnemy.update(Gdx.graphics.getDeltaTime());
         }
 
         switch (currentBattleState) {
             case PLAYER_INPUT:
                 break;
-
             case PLAYER_ATTACK_ANIMATION:
                 if (player.getCurrentState() == GameEntity.CharacterState.IDLE) {
                     int wordValue = WordCalculator.calculateWordValue(selectedTiles);
                     int totalDamageToEnemy = wordValue + player.getAttackPower();
                     currentEnemy.takeDamage(totalDamageToEnemy);
                     resetWordSelection();
-                    System.out.println(wordValue);
-                    System.out.println(totalDamageToEnemy);
-                    System.out.println("Player attacks " + currentEnemy.getClass().getSimpleName() + " for " + totalDamageToEnemy + " damage.");
 
                     for (Tile tile : selectedTiles) {
                         for (TileEffect effect : tile.getActiveEffects()) {
@@ -542,7 +482,7 @@ public class GameScreen extends ScreenAdapter {
 
                     initializeNewBoard();
 
-                    if (!currentEnemy.isAlive() && currentEnemy.getHealth() <=0) { // Cek apakah musuh mati setelah serangan
+                    if (!currentEnemy.isAlive() && currentEnemy.getHealth() <=0) {
                         currentEnemy.setState(GameEntity.CharacterState.DYING);
                         currentBattleState = BattleState.ENEMY_DYING_ANIMATION;
                         enemyDeathSound.play(0.25f);
@@ -561,20 +501,19 @@ public class GameScreen extends ScreenAdapter {
                 break;
 
             case CHECK_ROUND_END:
-                if (!currentEnemy.isAlive()) { // Cek apakah musuh mati (bukan hanya health <= 0)
-                    currentEnemy.setState(GameEntity.CharacterState.DYING); // Pastikan state DYING
+                if (!currentEnemy.isAlive()) {
+                    currentEnemy.setState(GameEntity.CharacterState.DYING);
                     currentBattleState = BattleState.ENEMY_DYING_ANIMATION;
-                } else if (!player.isAlive()) { // Player mati
-                    player.setState(GameEntity.CharacterState.DYING); // Pastikan state DYING
+                } else if (!player.isAlive()) {
+                    player.setState(GameEntity.CharacterState.DYING);
                     currentBattleState = BattleState.PLAYER_DYING_ANIMATION;
                 } else {
-                    // Jika musuh tidak mati, musuh menyerang balik
                     currentBattleState = BattleState.ENEMY_TURN_ATTACK_ANIMATION;
                     currentEnemy.setState(GameEntity.CharacterState.ATTACKING);
                     if (currentEnemy instanceof Wizard){
-                        enemyAttackSound.play(0.5f); // sfx wizard attack agak kecil
+                        enemyAttackSound.play(0.5f);
                     } else {
-                        enemyAttackSound.play(0.255f);
+                        enemyAttackSound.play(0.25f);
                     }
                     player.setState(GameEntity.CharacterState.IDLE);
                 }
@@ -584,9 +523,8 @@ public class GameScreen extends ScreenAdapter {
                 if (currentEnemy.getCurrentState() == GameEntity.CharacterState.IDLE) {
                     int enemyDamage = currentEnemy.getAttackPower();
                     player.takeDamage(enemyDamage);
-                    System.out.println(currentEnemy.getClass().getSimpleName() + " attacks player for " + enemyDamage + " damage.");
 
-                    if (!player.isAlive() && player.getHealth() <=0) { // Cek apakah player mati setelah serangan musuh
+                    if (!player.isAlive() && player.getHealth() <=0) {
                         player.setState(GameEntity.CharacterState.DYING);
                         playerDeathSound.play(0.25f);
                         currentBattleState = BattleState.PLAYER_DYING_ANIMATION;
@@ -604,61 +542,44 @@ public class GameScreen extends ScreenAdapter {
                 }
                 break;
 
-            case ENEMY_DYING_ANIMATION: // BARU: Logika untuk animasi kematian musuh
-                // currentEnemy.isAlive() di GameEntity sekarang return true juga untuk DYING
-                // Jadi kita cek state-nya DAN apakah animasinya sudah selesai
+            case ENEMY_DYING_ANIMATION:
                 if (currentEnemy.getCurrentState() == GameEntity.CharacterState.DYING &&
                     currentEnemy.getCurrentPlayingAnimation().isAnimationFinished(currentEnemy.getStateTime())) {
                     boolean isWizardDefeated = (currentEnemy instanceof Wizard);
-                    // Animasi kematian musuh selesai, lanjutkan dengan reward dan spawn musuh baru
                     player.addScore(currentEnemy.getGoldDrop());
-                    System.out.println("Enemy defeated! Spawning new enemy.");
                     progress += 0.1f;
 
-                    // Drop item (HealthPotion atau Weapon)
                     if (MathUtils.random.nextFloat() < 0.5f) {
                         HealthPotion newPotion = new HealthPotion();
                         player.addHealthPotion(newPotion);
-                        System.out.println("You found a Health Potion!");
                     }
                     if (MathUtils.random.nextFloat() < 0.2f) {
                         Weapon droppedWeapon;
                         float weaponchance = MathUtils.random.nextFloat();
                         if (weaponchance < 0.01f) {
                             droppedWeapon = new MagicStaff();
-                            System.out.println("You found a new weapon: Mr. Alby's Chosen One!");
-                        } else if(weaponchance < 0.1f){
+                        } else if(weaponchance < 0.05f){
                             droppedWeapon = new LegendarySword();
-                            System.out.println("You found a new weapon: Legendary Sword!");
-                        } else if (weaponchance < 0.3f) {
+                        } else if (weaponchance < 0.20f) {
                             droppedWeapon = new EpicSword();
-                            System.out.println("You found a new weapon: Epic Sword!");
-                        }else if (weaponchance < 0.5f) {
+                        }else if (weaponchance < 0.50f) {
                             droppedWeapon = new RareSword();
-                            System.out.println("You found a new weapon: Rare Sword!");
                         }else {
                             droppedWeapon = new CommonSword();
-                            System.out.println("You found a new weapon: Common Sword!");
                         }
                         player.addItem(droppedWeapon);
                     }
 
-                    currentEnemy.dispose(); // Hapus musuh lama sepenuhnya
+                    currentEnemy.dispose();
                     if (enemyAttackSound != null) enemyAttackSound.dispose();
                     if (enemyDeathSound != null) enemyDeathSound.dispose();
                     if (enemyHitSound != null) enemyHitSound.dispose();
 
-                    // --- Logika SPESIFIK untuk Kemenangan Wizard atau Spawn Musuh Biasa ---
                     if (isWizardDefeated) {
-                        System.out.println("Wizard defeated! You win!");
-                        // Hentikan musik latar belakang karena game selesai
-                        if (backgroundMusic != null) {
-                            backgroundMusic.stop();
-                        }
-                        // Transisi ke layar kemenangan
+                        if (backgroundMusic != null) backgroundMusic.stop();
                         game.setScreen(new WinScreen(game, player.getScore()));
-                        dispose(); // Dispose GameScreen ini karena sudah selesai
-                    }else {
+                        dispose();
+                    } else {
                         float enemySpawnChance = MathUtils.random.nextFloat();
                         if (progress >= 1f) {
                             currentEnemy = new Wizard("characters/wizard/");
@@ -672,9 +593,8 @@ public class GameScreen extends ScreenAdapter {
                         } else {
                             currentEnemy = new Wizard("characters/wizard/");
                         }
-                        System.out.println("New enemy spawned: " + currentEnemy.getClass().getSimpleName());
                         currentEnemy.setState(GameEntity.CharacterState.IDLE);
-                        // tiap enemy sfxnya blm tentu sama
+
                         if (currentEnemy instanceof Goblin) {
                             enemyHitSound = Gdx.audio.newSound(Gdx.files.internal("characters/goblin/goblin_hit.mp3"));
                             enemyAttackSound = Gdx.audio.newSound(Gdx.files.internal("characters/goblin/goblin_attack.mp3"));
@@ -693,67 +613,44 @@ public class GameScreen extends ScreenAdapter {
                             enemyDeathSound = Gdx.audio.newSound(Gdx.files.internal("characters/wizard/wizard_death.mp3"));
                         }
 
-//                    gameBoard.replaceUsedTiles(selectedTiles);
-//                    List<String> solutions = gameBoard.findAllValidWords();
-//                    if (solutions.isEmpty()) {
-//                        Gdx.app.log("GameScreen", "No valid words left on the board! Resetting board...");
-//                        initializeNewBoard();
-//                    } else {
-//                        Collections.sort(solutions);
-//                        Gdx.app.log("GameScreen", "New Board Solutions after submit: " + solutions);
-//                    }
-
-                        currentBattleState = BattleState.PLAYER_INPUT; // Kembali ke input player
+                        currentBattleState = BattleState.PLAYER_INPUT;
                         player.setState(GameEntity.CharacterState.IDLE);
                     }
                 }
                 break;
 
-            case PLAYER_DYING_ANIMATION: // BARU: Logika untuk animasi kematian player
+            case PLAYER_DYING_ANIMATION:
                 if (player.getCurrentState() == GameEntity.CharacterState.DYING &&
                     player.getCurrentPlayingAnimation().isAnimationFinished(player.getStateTime())) {
-                    // Animasi kematian player selesai, game over
                     currentBattleState = BattleState.GAME_OVER_SCREEN;
                     game.setScreen(new GameOverScreen(game, player.getScore()));
-                    dispose(); // Dispose GameScreen ini
+                    dispose();
                 }
                 break;
-
             case GAME_OVER_SCREEN:
-                // Jangan lakukan apa-apa, GameScreen akan dispose dan transisi ke GameOverScreen
                 break;
         }
-        // --- AKHIR LOGIKA STATE PERTARUNGAN ---
     }
 
     @Override
     public void resize(int width, int height) {
-        camera.setToOrtho(false, width, height);
+        // Diperbaiki: Memaksa FitViewport memperbarui skala ke tengah monitor secara presisi
+        game.viewport.update(width, height, true);
+        camera.viewportWidth = V_WIDTH;
+        camera.viewportHeight = V_HEIGHT;
+        camera.position.set(V_WIDTH / 2f, V_HEIGHT / 2f, 0f);
+        camera.update();
+
         stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void dispose() {
-        if (player != null) { // Tambahkan null check
-            player.dispose();
-        }
-        if (currentEnemy != null) {
-            currentEnemy.dispose();
-        }
-        if (gameBoard != null) {
-            gameBoard.dispose();
-        }
-        if (stage != null) { // Tambahkan null check
-            stage.dispose();
-        }
-//        if (skin != null) { // Tambahkan null check
-//            skin.dispose();
-//        }
-        if (tileFont != null) {
-            tileFont.dispose();
-        }
-        if (backgroundMusic != null){
-            backgroundMusic.dispose();
-        }
+        if (player != null) player.dispose();
+        if (currentEnemy != null) currentEnemy.dispose();
+        if (gameBoard != null) gameBoard.dispose();
+        if (stage != null) stage.dispose();
+        if (tileFont != null) tileFont.dispose();
+        if (backgroundMusic != null) backgroundMusic.dispose();
     }
 }

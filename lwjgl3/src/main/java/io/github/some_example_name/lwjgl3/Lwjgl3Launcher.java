@@ -1,36 +1,42 @@
-package io.github.some_example_name.lwjgl3; // Pastikan package ini sesuai dengan yang Anda gunakan
+package io.github.some_example_name.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-
-// Import kelas utama game Anda
 import io.github.some_example_name.BookwormGame;
 
+/** Meluncurkan aplikasi desktop berbasis LWJGL3. */
 public class Lwjgl3Launcher {
     public static void main(String[] args) {
-        // Panggil metode createApplication() untuk meluncurkan game
+        if (StartupHelper.startNewJvmIfRequired()) return; // Diperlukan untuk stabilitas macOS/Linux (jika ada)
         createApplication();
     }
 
     private static Lwjgl3Application createApplication() {
-        // Lwjgl3Application membutuhkan instance dari ApplicationListener.
-        // Karena BookwormGame meng-extend Game (yang merupakan implementasi ApplicationListener),
-        // kita cukup membuat instance dari BookwormGame di sini.
         return new Lwjgl3Application(new BookwormGame(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
-        configuration.setTitle("BookwormGame"); // Judul jendela game Anda
-        configuration.setWindowedMode(1000, 800); // Ukuran jendela game (lebar, tinggi)
-        configuration.useVsync(true); // Mengaktifkan VSync untuk sinkronisasi vertikal (menghindari screen tearing)
-        configuration.setForegroundFPS(60); // Batasi Frames Per Second (FPS) ketika jendela dalam fokus
-        // configuration.setIdleFPS(10); // Opsional: Batasi FPS ketika jendela tidak dalam fokus (misalnya, di latar belakang)
-         configuration.setResizable(false); // Opsional: Untuk membuat jendela tidak bisa diubah ukurannya
-        // configuration.setMaximized(true); // Opsional: Untuk memulai dalam mode maximized
-        // configuration.setInitialVisible(true); // Opsional: Memastikan jendela terlihat saat aplikasi dimulai
-        // configuration.setDecorated(true); // Opsional: Menampilkan dekorasi jendela (misalnya, tombol minimize/maximize/close)
-        // configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png"); // Opsional: Menentukan ikon jendela
+
+        // Mengatur judul pada window bar atas
+        configuration.setTitle("BookwormGame");
+
+        // 1. MENGAKTIFKAN MODE MAKSIMAL (Memenuhi layar monitor saat pertama dibuka)
+        configuration.setMaximized(true);
+
+        // 2. Mengatur ukuran window dasar/default sebelum di-maximize (1000x800 sesuai kanvas virtual)
+        configuration.setWindowedMode(1000, 800);
+
+        // 3. WAJIB TRUE: Mengizinkan resize agar FitViewport di GameScreen
+        // bisa otomatis menghitung ulang skala gambar ke tengah layar monitor.
+        configuration.setResizable(true);
+
+        // Mengatur batas FPS dan sinkronisasi vertikal (Vsync) agar game berjalan mulus tanpa patah-patah
+        configuration.useVsync(true);
+        configuration.setForegroundFPS(60);
+
+        // Mengatur icon aplikasi (Opsional, bawaan libGDX jika kamu menggunakannya nanti)
+        // configuration.setWindowIcon("libgdx16.png", "libgdx32.png", "libgdx64.png", "libgdx128.png");
 
         return configuration;
     }

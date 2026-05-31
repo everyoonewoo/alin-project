@@ -15,7 +15,7 @@ public class TileInputProcessor extends InputAdapter {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 worldCoordinates = new Vector3(screenX, screenY, 0);
-        screen.camera.unproject(worldCoordinates);
+        screen.game.viewport.unproject(worldCoordinates);
 
         for (int r = 0; r < screen.gameBoard.getGridRows(); r++) {
             for (int c = 0; c < screen.gameBoard.getGridCols(); c++) {
@@ -43,7 +43,7 @@ public class TileInputProcessor extends InputAdapter {
     public boolean mouseMoved(int screenX, int screenY) {
         if (Gdx.input.isButtonPressed(0)) {
             Vector3 worldCoordinates = new Vector3(screenX, screenY, 0);
-            screen.camera.unproject(worldCoordinates);
+            screen.game.viewport.unproject(worldCoordinates);
 
             if (screen.getSelectedTiles().size > 0) {
                 Tile lastSelected = screen.getSelectedTiles().peek();

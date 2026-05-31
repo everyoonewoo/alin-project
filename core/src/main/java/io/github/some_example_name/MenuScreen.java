@@ -55,7 +55,7 @@ public class MenuScreen implements Screen {
         // --- PEMUATAN ASET ---
         try {
             backgroundTexture = new Texture(Gdx.files.internal("background.jpg"));
-            titleTexture = new Texture(Gdx.files.internal("menu/Title.png"));
+            titleTexture = new Texture(Gdx.files.internal("menu/Title2.png"));
 
             // Memuat animasi untuk Player (berlari)
             playerSheet = new Texture(Gdx.files.internal("characters/player/Idle.png"));

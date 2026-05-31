@@ -2633,6 +2633,7 @@ dot
 double
 doubt
 doug
+dough
 douglas
 dover
 dow

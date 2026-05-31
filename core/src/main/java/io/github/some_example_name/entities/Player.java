@@ -15,7 +15,7 @@ public class Player extends GameEntity {
         // Ini adalah 8 argumen yang diharapkan oleh konstruktor GameEntity
         super(200, 10, // maxHealth, attackPower
             basePath + "Idle.png", 10, 1, 0.085f, // idleSpriteSheetPath, idleFrameCols, idleFrameRows, idleFrameDuration
-            500, 500); // displayWidth, displayHeight
+            400, 400); // displayWidth, displayHeight
 
         this.score = 0;
         this.inventory = new Array<>();
