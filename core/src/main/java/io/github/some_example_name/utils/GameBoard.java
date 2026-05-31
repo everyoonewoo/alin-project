@@ -29,11 +29,11 @@ public class GameBoard {
     private float gridStartY;
     private TextureRegion defaultTileRegion;
 
-    private static final char[] RARE_LETTERS_FOR_GEM = {'X', 'Y', 'Z', 'Q'};
+    private static final char[] RARE_LETTERS_FOR_GEM = {'V', 'W', 'X', 'Y', 'Z', 'Q'};
     private static final Random randomGenerator = new Random(); // Objek Random yang reusable
 
     // NEW: Batas maksimal panjang kata yang dicari oleh DFS
-    private final int MAX_DFS_WORD_LENGTH = 15; // Sesuaikan ini jika perlu (e.g., 10, 15)
+    private final int MAX_DFS_WORD_LENGTH = 10; // Sesuaikan ini jika perlu (e.g., 10, 15)
 
     public GameBoard(int rows, int cols, float tileSize, float startX, float startY, TextureRegion defaultTileRegion) {
         this.gridRows = rows;
@@ -52,7 +52,7 @@ public class GameBoard {
         long startTime = System.currentTimeMillis();
         int attempts = 0;
         final int MIN_REQUIRED_WORDS = 3; // Minimal 3 kata yang bisa dibentuk
-        final int MAX_ATTEMPTS = 500; // Batas percobaan untuk menghindari loop tak terbatas
+        final int MAX_ATTEMPTS = 200; // Batas percobaan untuk menghindari loop tak terbatas
 
         while (!validBoardFound && attempts < MAX_ATTEMPTS) {
             fillBoardWithRandomTiles(); // Mengisi ulang papan
