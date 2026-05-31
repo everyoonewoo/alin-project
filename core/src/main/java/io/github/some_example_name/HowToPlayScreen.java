@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class HowToPlayScreen implements Screen {
 
@@ -27,7 +26,9 @@ public class HowToPlayScreen implements Screen {
 
     public HowToPlayScreen(final BookwormGame game) {
         this.game = game;
-        stage = new Stage(new ScreenViewport());
+
+        // DIUBAH: Menggunakan game.viewport (FitViewport 1000x800) agar terkunci rapi di frame tengah
+        stage = new Stage(game.viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin();
@@ -39,7 +40,6 @@ public class HowToPlayScreen implements Screen {
             howToPlayTexture = new Texture(Gdx.files.internal("menu/how_to_play.png"));
 
             // Aset untuk tombol kembali
-            // Efek suara klik sekarang diambil dari 'game.clickSound'
             skin.add("quit_button_tex", new Texture(Gdx.files.internal("menu/quit_button.png")));
             skin.add("quit_button_shadow_tex", new Texture(Gdx.files.internal("menu/quit_button_shadow.png")));
 
@@ -53,33 +53,35 @@ public class HowToPlayScreen implements Screen {
         backButtonStyle.up = skin.newDrawable("quit_button_tex");
         backButtonStyle.over = skin.newDrawable("quit_button_shadow_tex");
         backButtonStyle.down = skin.newDrawable("quit_button_tex", Color.GRAY);
-        backButtonStyle.font = game.font; // Mengambil font dari kelas Game utama
+        backButtonStyle.font = game.font;
         backButtonStyle.fontColor = Color.WHITE;
         skin.add("back_style", backButtonStyle);
 
-        // --- LAYOUT TAMPILAN ---
+        // --- LAYOUT TAMPILAN (MENGGUNAKAN SKALA VIRTUAL 1000x800) ---
         Table table = new Table();
         table.setFillParent(true);
-        table.center();
+        table.top();
         stage.addActor(table);
 
         // --- BUAT ELEMEN ---
         Image howToPlayImage = new Image(howToPlayTexture);
         final TextButton backButton = new TextButton("BACK", skin, "back_style");
 
-        // Atur posisi tulisan di dalam tombol "BACK"
-        backButton.getLabelCell().padBottom(5f);
+        // Atur posisi tulisan di dalam tombol "BACK" agar pas di tengah tombol
+        backButton.getLabel().setFontScale(1.5f);
+        float verticalTextOffset = 10f;
+        float horizontalTextOffset = 15f;
+        backButton.getLabelCell().padBottom(verticalTextOffset).padLeft(horizontalTextOffset);
 
         // --- AKSI TOMBOL ---
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // Memanggil efek suara dari 'game'
                 if (game.clickSound != null) game.clickSound.play();
 
-                // Kembali ke MenuScreen
+                // Kembali ke MenuScreen dengan efek fadeOut yang mulus
                 stage.addAction(Actions.sequence(
-                    Actions.fadeOut(0.5f),
+                    Actions.fadeOut(0.4f),
                     Actions.run(new Runnable() {
                         @Override
                         public void run() {
@@ -90,22 +92,24 @@ public class HowToPlayScreen implements Screen {
                 ));
             }
         });
-        float verticalTextOffset = 10f; // Nilai untuk menggeser tulisan ke atas
-        float horizontalTextOffset = 15f; // Nilai untuk menggeser tulisan ke kanan
-        backButton.getLabelCell().padBottom(verticalTextOffset).padLeft(horizontalTextOffset);
-        table.add(howToPlayImage).width(Gdx.graphics.getWidth() * 1f).height(Gdx.graphics.getHeight() * 0.8f).pad(5);
+
+        // DIUBAH: Mengunci ukuran gambar panduan dan tombol secara statis di dalam kanvas virtual 1000x800
+        // Lebar gambar dibuat 750px dan tinggi 450px agar proporsional dan menyisakan ruang untuk tombol BACK di bawahnya
+        table.add(howToPlayImage).width(1050).height(650).padTop(10).center();
         table.row();
-        table.add(backButton).width(350).height(80).pad(20); // Beri jarak 20px dari gambar
+        table.add(backButton).width(280).height(70).padTop(15);
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
-        // Menggambar latar belakang
+        // DIUBAH: Menggunakan projection matrix FitViewport agar background tergambar presisi di frame tengah
+        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
         game.batch.begin();
         if (backgroundTexture != null) {
-            game.batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            // Menggambar background pas dengan ukuran kanvas virtual 1000x800
+            game.batch.draw(backgroundTexture, 0, 0, 1000, 800);
         }
         game.batch.end();
 
@@ -116,6 +120,8 @@ public class HowToPlayScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        // DIUBAH: Sinkronisasi pembaruan ukuran layar menggunakan game.viewport
+        game.viewport.update(width, height, true);
         stage.getViewport().update(width, height, true);
     }
 
@@ -125,16 +131,15 @@ public class HowToPlayScreen implements Screen {
         skin.dispose();
         if (backgroundTexture != null) backgroundTexture.dispose();
         if (howToPlayTexture != null) howToPlayTexture.dispose();
-        // Tidak perlu dispose clickSound di sini lagi karena dikelola oleh BookwormGame
     }
 
-    // Metode lain dari interface Screen
-    @Override public void show() {
-        // Pastikan musik terus berlanjut jika user kembali ke menu ini
+    @Override
+    public void show() {
         if (game.backgroundMusic != null && !game.backgroundMusic.isPlaying()) {
             game.backgroundMusic.play();
         }
     }
+
     @Override public void hide() {}
     @Override public void pause() {}
     @Override public void resume() {}

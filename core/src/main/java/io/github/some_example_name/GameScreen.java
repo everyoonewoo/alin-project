@@ -471,6 +471,9 @@ public class GameScreen extends ScreenAdapter {
                 if (player.getCurrentState() == GameEntity.CharacterState.IDLE) {
                     int wordValue = WordCalculator.calculateWordValue(selectedTiles);
                     int totalDamageToEnemy = wordValue + player.getAttackPower();
+
+                    player.addScore(wordValue);
+
                     currentEnemy.takeDamage(totalDamageToEnemy);
                     resetWordSelection();
 
