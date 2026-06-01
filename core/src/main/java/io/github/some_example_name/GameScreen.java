@@ -335,16 +335,29 @@ public class GameScreen extends ScreenAdapter {
 
     private boolean isAdjacent(Tile tile1, Tile tile2) {
         int r1 = -1, c1 = -1, r2 = -1, c2 = -1;
+
+        // 1. Cari posisi koordinat kedua Tile di dalam grid
         for (int r = 0; r < gameBoard.getGridRows(); r++) {
             for (int c = 0; c < gameBoard.getGridCols(); c++) {
                 if (gameBoard.tileGrid[r][c] == tile1) { r1 = r; c1 = c; }
                 if (gameBoard.tileGrid[r][c] == tile2) { r2 = r; c2 = c; }
             }
         }
+
+        // Jika salah satu tile tidak ditemukan di grid, batalkan
         if (r1 == -1 || c1 == -1 || r2 == -1 || c2 == -1) return false;
-        int dr = Math.abs(r1 - r2);
-        int dc = Math.abs(c1 - c2);
-        return (dr <= 1 && dc <= 1) && (dr != 0 || dc != 0);
+
+        // Mencegah membandingkan tile yang sama (dirinya sendiri)
+        if (r1 == r2 && c1 == c2) return false;
+
+        // 2. ALJABAR LINEAR: EuclideanDist
+        float dr = r1 - r2;
+        float dc = c1 - c2;
+        float euclideanDist = (float) Math.sqrt(dr * dr + dc * dc);
+
+        // 3. Jarak tetangga (horizontal/vertikal = 1.0, diagonal = 1.414)
+        // Jika <= 1.5f, berarti mereka bersebelahan
+        return euclideanDist <= 1.5f;
     }
 
     public void processWord() {

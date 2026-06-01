@@ -165,15 +165,20 @@ public class GameBoard {
             foundWords.add(nextWord);
         }
 
-        //ALJABAR LINEAR: EuclideanDist
+        //Mengecek semua kotak di papan permainan untuk menyaring mana yang posisinya bertetangga?
         for (int nr = 0; nr < gridRows; nr++) {
             for (int nc = 0; nc < gridCols; nc++) {
+
+                // Mencegah menghitung jarak kotak ke dirinya sendiri
                 if (nr == r && nc == c) continue;
 
+                // 2. ALJABAR LINEAR: EuclideanDist
                 float dr = nr - r;
                 float dc = nc - c;
                 float euclideanDist = (float) Math.sqrt(dr * dr + dc * dc);
 
+                // 3. Batas toleransi floating-point (horizontal/vertikal = 1.0, diagonal = 1.414)
+                // Jika <= 1.5f, maka kotak (nr, nc) sah sebagai tetangga dan pencarian DFS dilanjutkan
                 if (euclideanDist <= 1.5f) {
                     findWordsFromTile(nr, nc, nextWord, visited, foundWords);
                 }
