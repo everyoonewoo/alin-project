@@ -1,6 +1,6 @@
 package io.github.some_example_name.tiles;
 
-public class GemTile extends Tile { // Inheritance: GemTile IS A Tile
+public class GemTile extends Tile {
     private int bonusMultiplier;
     private String gemType;
 
@@ -13,7 +13,7 @@ public class GemTile extends Tile { // Inheritance: GemTile IS A Tile
 
     @Override
     public int getValue() {
-        return super.getValue() * bonusMultiplier; // Polymorphism: Override getValue
+        return super.getValue() * bonusMultiplier;
     }
 
     public String getGemType() {

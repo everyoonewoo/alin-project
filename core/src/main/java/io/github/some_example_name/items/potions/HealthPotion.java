@@ -13,9 +13,9 @@ public class HealthPotion extends Item {
     }
 
     @Override
-    public void interact(Player player) { // Parameter harus Player, bukan GameEntity umum
+    public void interact(Player player) {
         System.out.println("Player used Health Potion. Healed " + healAmount + " HP.");
-        player.heal(healAmount); // Panggil metode heal() di objek Player
+        player.heal(healAmount);
     }
 
     public int getHealAmount() {

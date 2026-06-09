@@ -38,7 +38,7 @@ import io.github.some_example_name.items.Item;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 
 public class GameScreen extends ScreenAdapter {
-    // Kunci ukuran virtual kanvas game (Membasmi masalah tumpang tindih)
+    // Kunci ukuran virtual kanvas game
     private static final float V_WIDTH = 1000f;
     private static final float V_HEIGHT = 800f;
 
@@ -110,7 +110,7 @@ public class GameScreen extends ScreenAdapter {
 
         WordDictionary.loadDictionary();
 
-        // Diperbaiki: Kamera disamakan dengan ukuran dasar kanvas game (1000x800)
+        // Kamera disamakan dengan ukuran dasar kanvas game (1000x800)
         camera = new OrthographicCamera();
         camera.setToOrtho(false, V_WIDTH, V_HEIGHT);
 
@@ -127,7 +127,7 @@ public class GameScreen extends ScreenAdapter {
 
         defaultTileTextureRegion = game.getTileTextureRegion();
 
-        // Diperbaiki: Posisi musuh digeser agar pas di dalam frame kanan bawah
+        // Posisi musuh digeser agar pas di dalam frame kanan bawah
         enemyX = 650f;
         enemyY = 415f;
 
@@ -156,12 +156,12 @@ public class GameScreen extends ScreenAdapter {
         glyphLayout = new GlyphLayout();
         potionCountLayout = new GlyphLayout();
 
-        // Diperbaiki: Menggunakan viewport utama game agar ikut membesar ke tengah
+        // Menggunakan viewport utama game agar ikut membesar ke tengah
         stage = new Stage(game.viewport, batch);
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         skin.add("default-font", game.font);
 
-        // --- TOMBOL SUBMIT (Diatur presisi di bawah grid) ---
+        // Tombol submit
         submitButton = new TextButton("SUBMIT", skin);
         submitButton.setSize(120, 45);
         submitButton.setPosition(V_WIDTH / 2f - 130f, 50f);
@@ -173,7 +173,7 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(submitButton);
 
-        // --- TOMBOL CLEAR ---
+        // Tombol clear
         clearButton = new TextButton("CLEAR", skin);
         clearButton.setSize(120, 45);
         clearButton.setPosition(V_WIDTH / 2f + 10f, 50f);
@@ -185,7 +185,7 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(clearButton);
 
-        // --- TOMBOL USE POTION (Pojok Kiri Atas) ---
+        // Tombol use potion
         usePotionButton = new TextButton("Use Potion", skin);
         usePotionButton.setSize(120, 45);
         usePotionButton.setPosition(30f, V_HEIGHT - 75f);
@@ -200,7 +200,7 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(usePotionButton);
 
-        // --- TOMBOL BACKPACK (Di bawah tombol potion) ---
+        // Tombol backpack
         backpackButton = new TextButton("Backpack", skin);
         backpackButton.setSize(120, 45);
         backpackButton.setPosition(30f, V_HEIGHT - 130f);
@@ -217,7 +217,7 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(backpackButton);
 
-        // --- WINDOW BACKPACK ---
+        // Window backpack
         backpackWindow = new com.badlogic.gdx.scenes.scene2d.ui.Window("Backpack", skin);
         backpackWindow.setSize(320, 420);
         backpackWindow.setPosition(V_WIDTH / 2f - 160f, V_HEIGHT / 2f - 210f);
@@ -416,43 +416,30 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
-        // 3. Diperbaiki: Gambar Player & Status Teks di Kiri Bawah (Masuk Frame, Ga Minus Lagi)
         player.render(batch, -130f, -30f);
         game.font.draw(batch, "Player HP: " + player.getHealth() + "/" + player.getMaxHealth(), 20f, 100f);
         game.font.draw(batch, "Score: " + player.getScore(), 20f, 75f);
         game.font.draw(batch, "Weapon: " + player.getEquippedWeapon().getName(), 20f, 50f);
 
-        // Potion Text ditaruh rapi di bawah tombol Backpack (Pojok kiri atas)
         String potionText = "Potions: " + player.getHealthPotions();
         game.font.draw(batch, potionText, 30f, V_HEIGHT - 150f);
 
-        // 4. Diperbaiki: Gambar Enemy & Status Teks di Kanan Bawah (Ga Tumpat)
-        // ====================================================================
-        // 4. GAMBAR ENEMY & TEKS STATUS (Dinamis Mengikuti Lebar Sprite Musuh)
-        // ====================================================================
         if (currentEnemy.getCurrentState() != GameEntity.CharacterState.DYING || !currentEnemy.getCurrentPlayingAnimation().isAnimationFinished(currentEnemy.getStateTime())) {
-            // 1. Tetap gambar karakter musuh di pojok kanan atas
             currentEnemy.render(batch, enemyX, enemyY);
 
-            // 2. HITUNG TITIK TENGAH SECARA OTOMATIS BERDASARKAN LEBAR SPRITE MUSUH
-            // Rumus: Titik X musuh + (Lebar display asli musuh / 2)
-            // Cara ini menjamin tipe musuh sekecil Dragon atau seramping Ogre akan memiliki pusat yang pas!
             float enemyCenterX = enemyX + (475f / 2f);
 
-            // 3. Teks Baris 1: Nama Musuh
             String enemyNameText = "Enemy Name: " + currentEnemy.getClass().getSimpleName();
-            glyphLayout.setText(game.font, enemyNameText); // Mengukur panjang teks nama musuh
-            float nameX = enemyCenterX - (glyphLayout.width / 2f); // Geser ke kiri setengah dari panjang teks
-            game.font.draw(batch, enemyNameText, nameX, 755f); // Dinaikkan sedikit ke Y=755f agar ada jarak dari kepala
+            glyphLayout.setText(game.font, enemyNameText);
+            float nameX = enemyCenterX - (glyphLayout.width / 2f);
+            game.font.draw(batch, enemyNameText, nameX, 755f);
 
-            // 4. Teks Baris 2: HP Musuh
             String enemyHPText = "HP: " + currentEnemy.getHealth() + "/" + currentEnemy.getMaxHealth();
-            glyphLayout.setText(game.font, enemyHPText); // Mengukur panjang teks HP musuh
-            float hpX = enemyCenterX - (glyphLayout.width / 2f); // Geser ke kiri setengah dari panjang teks
-            game.font.draw(batch, enemyHPText, hpX, 730f); // Ditata tepat di bawah nama musuh (Y=730f)
+            glyphLayout.setText(game.font, enemyHPText);
+            float hpX = enemyCenterX - (glyphLayout.width / 2f);
+            game.font.draw(batch, enemyHPText, hpX, 730f);
 
         } else {
-            // Jika musuh mati, teks "Enemy Defeated!" juga otomatis berada di tengah kepala tempat musuh berdiri
             float enemyCenterX = enemyX + (475f / 2f);
             String defeatedText = "Enemy Defeated!";
             glyphLayout.setText(game.font, defeatedText);
@@ -460,18 +447,15 @@ public class GameScreen extends ScreenAdapter {
             game.font.draw(batch, defeatedText, defeatedX, 755f);
         }
 
-        // 5. Diperbaiki: Teks Current Word ditaruh pas di atas tombol SUBMIT & CLEAR
         String currentWordText = "Current Word: " + currentWord;
         glyphLayout.setText(game.font, currentWordText);
         game.font.draw(batch, currentWordText, (V_WIDTH - glyphLayout.width) / 2f, 735);
 
         batch.end();
 
-        // 6. Render UI Tombol Stage
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
-        // Logic Update State Game (Tetap asli)
         player.update(Gdx.graphics.getDeltaTime());
         if (currentEnemy != null) {
             currentEnemy.update(Gdx.graphics.getDeltaTime());
@@ -650,7 +634,6 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        // Diperbaiki: Memaksa FitViewport memperbarui skala ke tengah monitor secara presisi
         game.viewport.update(width, height, true);
         camera.viewportWidth = V_WIDTH;
         camera.viewportHeight = V_HEIGHT;

@@ -1,6 +1,6 @@
 package io.github.some_example_name.interfaces;
 
-import io.github.some_example_name.entities.Player; // Perlu import Player
+import io.github.some_example_name.entities.Player;
 
 public interface Interactable {
     void interact(Player player);

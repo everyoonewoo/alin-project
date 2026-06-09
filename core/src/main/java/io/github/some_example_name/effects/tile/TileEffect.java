@@ -12,8 +12,8 @@ public abstract class TileEffect {
         this.description = description;
     }
 
-    public abstract void apply(Tile tile); // Dipanggil saat efek ditambahkan ke tile
-    public abstract void onWordUse(Tile tile, GameEntity target); // Dipanggil saat tile digunakan dalam kata
+    public abstract void apply(Tile tile);
+    public abstract void onWordUse(Tile tile, GameEntity target);
 
     public String getName() {
         return name;

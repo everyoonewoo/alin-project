@@ -34,9 +34,7 @@ public class TileInputProcessor extends InputAdapter {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        // Hapus pemanggilan processWord() di sini.
-        // processWord() sekarang dipicu oleh tombol SUBMIT.
-        return false; // Event tidak dikonsumsi oleh TileInputProcessor lagi di touchUp
+        return false;
     }
 
     @Override

@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.some_example_name.interfaces.Renderable;
-import io.github.some_example_name.interfaces.Interactable; // Import Interactable
+import io.github.some_example_name.interfaces.Interactable;
 
-public abstract class Item implements Renderable, Interactable { // Item implements Renderable, Interactable
+public abstract class Item implements Renderable, Interactable {
     protected String name;
     protected Texture texture;
 

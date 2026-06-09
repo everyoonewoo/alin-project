@@ -46,7 +46,7 @@ public class GameOverScreen extends ScreenAdapter {
 
         // Restart Button (Diposisikan pas di tengah vertikal)
         restartButton = new TextButton("Restart Game", skin);
-        restartButton.setSize(250, 70); // Diperbesar sedikit agar lebih proporsional
+        restartButton.setSize(250, 70);
         restartButton.setPosition(virtualWidth / 2f - restartButton.getWidth() / 2f, virtualHeight / 2f - 20f);
         restartButton.addListener(new ClickListener() {
             @Override
@@ -57,7 +57,7 @@ public class GameOverScreen extends ScreenAdapter {
         });
         stage.addActor(restartButton);
 
-        // Exit Button (Diposisikan di bawah tombol restart)
+        // Exit Button
         exitButton = new TextButton("Exit Game", skin);
         exitButton.setSize(250, 70);
         exitButton.setPosition(virtualWidth / 2f - exitButton.getWidth() / 2f, virtualHeight / 2f - 110f);
@@ -72,7 +72,7 @@ public class GameOverScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        // Bersihkan layar dengan warna abu-abu gelap estetik
+        // Bersihkan layar dengan warna abu-abu gelap
         ScreenUtils.clear(0.1f, 0.1f, 0.1f, 1);
 
         // SINKRONISASI UTAMA: Paksa batch mengikuti kamera milik viewport (1000x800)

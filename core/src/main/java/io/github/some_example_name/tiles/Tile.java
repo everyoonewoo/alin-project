@@ -8,7 +8,7 @@ import io.github.some_example_name.interfaces.Renderable;
 import io.github.some_example_name.interfaces.Clickable;
 import io.github.some_example_name.effects.tile.TileEffect; // Import TileEffect
 
-public abstract class Tile implements Renderable, Clickable { // Tile implements Renderable and Clickable
+public abstract class Tile implements Renderable, Clickable {
     protected char letter;
     protected Texture texture;
     protected int value; // Nilai dasar untuk kata
@@ -16,7 +16,7 @@ public abstract class Tile implements Renderable, Clickable { // Tile implements
     // Untuk Clickable
     public float x, y, width, height;
 
-    protected Array<TileEffect> activeEffects; // Komposisi: Tile HAS A list of TileEffects
+    protected Array<TileEffect> activeEffects;
 
     public Tile(char letter, String texturePath, int value, float x, float y, float width, float height) {
         this.letter = Character.toUpperCase(letter);
@@ -40,10 +40,8 @@ public abstract class Tile implements Renderable, Clickable { // Tile implements
     @Override
     public void render(SpriteBatch batch, float x, float y) {
         batch.draw(texture, x, y, width, height);
-        // Asumsi huruf akan digambar di GameScreen
     }
 
-    // Implementasi Clickable
     @Override
     public boolean contains(float cx, float cy) {
         return cx >= x && cx < x + width && cy >= y && cy < y + height;
@@ -52,7 +50,6 @@ public abstract class Tile implements Renderable, Clickable { // Tile implements
     @Override
     public void onClick(float cx, float cy) {
         System.out.println("Tile '" + letter + "' at (" + (int)x + "," + (int)y + ") clicked.");
-        // Logika detail pemilihan kata ada di GameScreen
     }
 
     public void addEffect(TileEffect effect) {

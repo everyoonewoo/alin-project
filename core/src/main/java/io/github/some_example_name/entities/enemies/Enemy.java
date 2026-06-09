@@ -2,15 +2,14 @@ package io.github.some_example_name.entities.enemies;
 
 import io.github.some_example_name.entities.GameEntity;
 
-public abstract class Enemy extends GameEntity { // Inheritance: Enemy IS A GameEntity
-    protected int goldDrop; // Musuh menjatuhkan emas
+public abstract class Enemy extends GameEntity {
+    protected int goldDrop;
 
-    // MODIFIKASI: Konstruktor Enemy sekarang menerima parameter animasi
     public Enemy(int maxHealth, int attackPower, int goldDrop,
          String idleSpriteSheetPath, int idleFrameCols, int idleFrameRows, float idleFrameDuration,
          String attackSpriteSheetPath, int attackFrameCols, int attackFrameRows, float attackFrameDuration,
          String hitSpriteSheetPath, int hitFrameCols, int hitFrameRows, float hitFrameDuration,
-         String dyingSpriteSheetPath, int dyingFrameCols, int dyingFrameRows, float dyingFrameDuration, // BARU: Dying
+         String dyingSpriteSheetPath, int dyingFrameCols, int dyingFrameRows, float dyingFrameDuration,
          float displayWidth, float displayHeight) {
         super(maxHealth, attackPower, idleSpriteSheetPath, idleFrameCols, idleFrameRows, idleFrameDuration,
             displayWidth, displayHeight);
@@ -18,7 +17,7 @@ public abstract class Enemy extends GameEntity { // Inheritance: Enemy IS A Game
 
         setAttackAnimation(attackSpriteSheetPath, attackFrameCols, attackFrameRows, attackFrameDuration);
         setHitAnimation(hitSpriteSheetPath, hitFrameCols, hitFrameRows, hitFrameDuration);
-        setDyingAnimation(dyingSpriteSheetPath, dyingFrameCols, dyingFrameRows, dyingFrameDuration); // BARU: Set Dying Animation
+        setDyingAnimation(dyingSpriteSheetPath, dyingFrameCols, dyingFrameRows, dyingFrameDuration);
     }
 
     @Override

@@ -30,10 +30,10 @@ public class GameBoard {
     private TextureRegion defaultTileRegion;
 
     private static final char[] RARE_LETTERS_FOR_GEM = {'V', 'W', 'X', 'Y', 'Z', 'Q'};
-    private static final Random randomGenerator = new Random(); // Objek Random yang reusable
+    private static final Random randomGenerator = new Random();
 
-    // NEW: Batas maksimal panjang kata yang dicari oleh DFS
-    private final int MAX_DFS_WORD_LENGTH = 10; // Sesuaikan ini jika perlu (e.g., 10, 15)
+    // Batas maksimal panjang kata yang dicari oleh DFS
+    private final int MAX_DFS_WORD_LENGTH = 10;
 
     public GameBoard(int rows, int cols, float tileSize, float startX, float startY, TextureRegion defaultTileRegion) {
         this.gridRows = rows;
@@ -44,7 +44,7 @@ public class GameBoard {
         this.defaultTileRegion = defaultTileRegion;
 
         tileGrid = new Tile[gridRows][gridCols];
-        initializeAndValidateBoard(); // Panggil ini untuk mengisi dan memvalidasi papan awal
+        initializeAndValidateBoard(); // Panggil untuk mengisi dan memvalidasi papan awal
     }
 
     private void initializeAndValidateBoard() {
@@ -87,7 +87,6 @@ public class GameBoard {
         }
     }
 
-    // NEW: Helper method to generate a single random tile
     private Tile generateRandomTile(int r, int c) {
         char letterForTile;
         float tileX = gridStartX + c * tileSize;
@@ -95,7 +94,7 @@ public class GameBoard {
 
         float chance = MathUtils.random.nextFloat();
 
-        if (MathUtils.random.nextFloat() < 0.05f) { // Misalnya 5% kemungkinan huruf langka untuk GemTile
+        if (MathUtils.random.nextFloat() < 0.05f) {
             letterForTile = getRandomRareLetterForGem();
         } else {
             letterForTile = WordDictionary.getRandomCommonLetter().charAt(0);
@@ -145,7 +144,6 @@ public class GameBoard {
             return;
         }
 
-        // MODIFIED: Hentikan pencarian jika panjang kata melebihi batas
         if (currentWord.length() >= MAX_DFS_WORD_LENGTH) {
             return;
         }
@@ -153,14 +151,12 @@ public class GameBoard {
         char letter = tileGrid[r][c].getLetter();
         String nextWord = currentWord + letter;
 
-        // MODIFIED: WordDictionary.isPrefix() sekarang sangat cepat karena pakai Trie
         if (!WordDictionary.isPrefix(nextWord)) {
             return;
         }
 
         visited[r][c] = true;
 
-        // MODIFIED: WordDictionary.isValidWord() sekarang sangat cepat karena pakai Trie
         if (nextWord.length() >= 3 && WordDictionary.isValidWord(nextWord)) {
             foundWords.add(nextWord);
         }
@@ -187,9 +183,6 @@ public class GameBoard {
 
         visited[r][c] = false; // Backtrack
     }
-
-    // REMOVED: Metode replaceUsedTiles dihapus karena Anda ingin reset board penuh
-    // public void replaceUsedTiles(Array<Tile> usedTiles) { ... }
 
     public Tile getTile(int r, int c) {
         if (r >= 0 && r < gridRows && c >= 0 && c < gridCols) {
@@ -223,7 +216,7 @@ public class GameBoard {
             for (int c = 0; c < gridCols; c++) {
                 if (tileGrid[r][c] != null) {
                     tileGrid[r][c].dispose();
-                    tileGrid[r][c] = null; // Set to null after disposing
+                    tileGrid[r][c] = null;
                 }
             }
         }

@@ -1,4 +1,4 @@
-package io.github.some_example_name; // Pastikan package ini SAMA dengan BookwormGame.java
+package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -27,13 +27,12 @@ public class HowToPlayScreen implements Screen {
     public HowToPlayScreen(final BookwormGame game) {
         this.game = game;
 
-        // DIUBAH: Menggunakan game.viewport (FitViewport 1000x800) agar terkunci rapi di frame tengah
         stage = new Stage(game.viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin();
 
-        // --- PEMUATAN ASET ---
+        // PEMUATAN ASET
         try {
             // Muat gambar utama untuk layar ini
             backgroundTexture = new Texture(Gdx.files.internal("background.jpg"));
@@ -48,7 +47,7 @@ public class HowToPlayScreen implements Screen {
             e.printStackTrace();
         }
 
-        // --- STYLE TOMBOL KEMBALI ---
+        // STYLE TOMBOL KEMBALI
         TextButton.TextButtonStyle backButtonStyle = new TextButton.TextButtonStyle();
         backButtonStyle.up = skin.newDrawable("quit_button_tex");
         backButtonStyle.over = skin.newDrawable("quit_button_shadow_tex");
@@ -57,13 +56,13 @@ public class HowToPlayScreen implements Screen {
         backButtonStyle.fontColor = Color.WHITE;
         skin.add("back_style", backButtonStyle);
 
-        // --- LAYOUT TAMPILAN (MENGGUNAKAN SKALA VIRTUAL 1000x800) ---
+        // LAYOUT TAMPILAN
         Table table = new Table();
         table.setFillParent(true);
         table.top();
         stage.addActor(table);
 
-        // --- BUAT ELEMEN ---
+        // BUAT ELEMEN
         Image howToPlayImage = new Image(howToPlayTexture);
         final TextButton backButton = new TextButton("BACK", skin, "back_style");
 
@@ -73,7 +72,7 @@ public class HowToPlayScreen implements Screen {
         float horizontalTextOffset = 15f;
         backButton.getLabelCell().padBottom(verticalTextOffset).padLeft(horizontalTextOffset);
 
-        // --- AKSI TOMBOL ---
+        // AKSI TOMBOL
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -93,8 +92,6 @@ public class HowToPlayScreen implements Screen {
             }
         });
 
-        // DIUBAH: Mengunci ukuran gambar panduan dan tombol secara statis di dalam kanvas virtual 1000x800
-        // Lebar gambar dibuat 750px dan tinggi 450px agar proporsional dan menyisakan ruang untuk tombol BACK di bawahnya
         table.add(howToPlayImage).width(1050).height(650).padTop(10).center();
         table.row();
         table.add(backButton).width(280).height(70).padTop(15);
@@ -104,7 +101,6 @@ public class HowToPlayScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
-        // DIUBAH: Menggunakan projection matrix FitViewport agar background tergambar presisi di frame tengah
         game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
         game.batch.begin();
         if (backgroundTexture != null) {
@@ -120,7 +116,6 @@ public class HowToPlayScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        // DIUBAH: Sinkronisasi pembaruan ukuran layar menggunakan game.viewport
         game.viewport.update(width, height, true);
         stage.getViewport().update(width, height, true);
     }

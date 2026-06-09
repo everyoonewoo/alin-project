@@ -1,4 +1,4 @@
-package io.github.some_example_name; // Pastikan package ini SAMA dengan BookwormGame.java
+package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -43,13 +43,12 @@ public class MenuScreen implements Screen {
     public MenuScreen(final BookwormGame game) {
         this.game = game;
 
-        // Kunci stage ke viewport game utama (FitViewport 1000x800)
         stage = new Stage(game.viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin();
 
-        // --- PEMUATAN ASET ---
+        // PEMUATAN ASET
         try {
             backgroundTexture = new Texture(Gdx.files.internal("background.jpg"));
             titleTexture = new Texture(Gdx.files.internal("menu/Title2.png"));
@@ -71,7 +70,7 @@ public class MenuScreen implements Screen {
             e.printStackTrace();
         }
 
-        // --- STYLE TOMBOL ---
+        // STYLE TOMBOL
         TextButton.TextButtonStyle mainButtonStyle = new TextButton.TextButtonStyle();
         mainButtonStyle.up = skin.newDrawable("play_button_tex");
         mainButtonStyle.over = skin.newDrawable("play_button_shadow_tex");
@@ -88,9 +87,7 @@ public class MenuScreen implements Screen {
         quitButtonStyle.fontColor = Color.WHITE;
         skin.add("quit_style", quitButtonStyle);
 
-        // ====================================================================
-        // --- INISIALISASI ELEMEN UI ---
-        // ====================================================================
+        // INISIALISASI ELEMEN UI
         Image titleImage = new Image(titleTexture);
         playerImage = new Image(playerAnimation.getKeyFrame(0));
         wizardImage = new Image(wizardAnimation.getKeyFrame(0));
@@ -117,38 +114,26 @@ public class MenuScreen implements Screen {
         buttonSubTable.row();
         buttonSubTable.add(exitButton).width(280).height(70).pad(10);
 
-        // ====================================================================
-        // --- STRUKTUR LAYOUT GRID UTAMA ---
-        // ====================================================================
+        // STRUKTUR LAYOUT GRID UTAMA
         Table mainTable = new Table();
         mainTable.setFillParent(true);
 
-        // PERBAIKAN: Set agar gravitasi Table utama menarik elemen ke ATAS (Top-Centered)
         mainTable.top();
 
         stage.addActor(mainTable);
 
-        // BARIS 1: Judul "Ember of Hope" (Nempel rapat di POJOK ATAS TENGAH dengan padTop 0)
         mainTable.add(titleImage).width(950).height(550).colspan(3).padTop(0).center();
         mainTable.row();
 
-        // BARIS 2: Karakter Kiri - Tombol Menu Tengah - Karakter Kanan
-        // Karena Table ditarik ke atas, kita beri padTop (jarak atas) pada elemen baris ini
-        // agar mereka turun ke area bawah rumput dan tidak menabrak judul di atasnya.
         float contentRowPadTop = -200f;
 
-        // Kolom 1: Player (Berada di antara tombol tengah dan pojok kiri layar)
         mainTable.add(playerImage).size(400).bottom().left().expandX().padTop(contentRowPadTop);
 
-        // Kolom 2: Sub-Table berisi Tombol Menu
         mainTable.add(buttonSubTable).center().expandX().padTop(contentRowPadTop);
 
-        // Kolom 3: Wizard (Berada di antara tombol tengah dan pojok kanan layar)
         mainTable.add(wizardImage).size(420).bottom().right().expandX().padTop(contentRowPadTop);
 
-        // ====================================================================
-        // --- AKSI TOMBOL ---
-        // ====================================================================
+        // AKSI TOMBOL
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

@@ -10,13 +10,12 @@ import java.util.Map;
 import java.util.Random; // Untuk memilih kata acak
 
 public class WordDictionary {
-    // Root dari Trie (prefix tree) kita
+    // Root dari Trie (prefix tree)
     private static TrieNode root;
-    private static final String DICTIONARY_PATH = "dictionary.txt"; // Pastikan file ini ada di folder assets
+    private static final String DICTIONARY_PATH = "dictionary.txt";
     private static final Random RANDOM = new Random(); // Untuk memilih kata acak
 
     // Huruf umum untuk pengacakan berbobot (English distribution example)
-    // Sesuaikan ini jika game Anda menggunakan bahasa Indonesia
     private static final String COMMON_LETTERS = "AAAAAABBBCCCDDDDEEEEEEEEEEFFGGHHHHIIIIIIIIJJKKLLLLMMNNNNNOOOOOOOPPPQRRRRRRSSSSSTTTTTTUUUUVVWWXYYZ";
 
     /**

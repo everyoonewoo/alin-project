@@ -19,6 +19,6 @@ public class BonusDamageEffect extends TileEffect {
     @Override
     public void onWordUse(Tile tile, GameEntity target) {
         System.out.println("Applying " + bonusDamage + " bonus damage from tile '" + tile.getLetter() + "'.");
-        target.takeDamage(bonusDamage); // Langsung berikan kerusakan tambahan
+        target.takeDamage(bonusDamage);
     }
 }

@@ -14,17 +14,14 @@ public abstract class GameEntity implements Attackable, Renderable {
         IDLE,
         ATTACKING,
         HIT,
-        DYING // Opsional, jika ada animasi mati
+        DYING
     }
 
     protected int health;
     protected int maxHealth;
     protected int attackPower;
-    // HAPUS: protected Texture texture; // Ini untuk gambar statis, akan diganti dengan animasi
     protected float x, y; // Posisi di layar
 
-
-    // --- BARU: Untuk Animasi ---
     protected Animation<TextureRegion> idleAnimation;
     protected Animation<TextureRegion> attackAnimation;
     protected Animation<TextureRegion> hitAnimation;
@@ -33,7 +30,7 @@ public abstract class GameEntity implements Attackable, Renderable {
     protected Texture spriteSheet; // Texture untuk sprite sheet (gambar asli)
     protected float displayWidth; // Lebar karakter saat digambar di layar
     protected float displayHeight; // Tinggi karakter saat digambar di layar
-    // --- AKHIR BARU ---
+
     protected Animation<TextureRegion> currentPlayingAnimation; // Animasi yang sedang diputar
     protected Texture idleSpriteSheet; // Texture untuk sprite sheet idle
     protected Texture attackSpriteSheet; // Texture untuk sprite sheet attack
@@ -41,11 +38,9 @@ public abstract class GameEntity implements Attackable, Renderable {
     protected Texture dyingSpriteSheet;
     protected CharacterState currentState;
 
-
-    // MODIFIKASI: Konstruktor sekarang menerima parameter untuk animasi
     public GameEntity(int maxHealth, int attackPower,
-                                              String idleSpriteSheetPath, int idleFrameCols, int idleFrameRows, float idleFrameDuration,
-                                              float displayWidth, float displayHeight) {
+                      String idleSpriteSheetPath, int idleFrameCols, int idleFrameRows, float idleFrameDuration,
+                      float displayWidth, float displayHeight) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.attackPower = attackPower;
@@ -53,7 +48,6 @@ public abstract class GameEntity implements Attackable, Renderable {
         this.displayWidth = displayWidth;
         this.displayHeight = displayHeight;
 
-        // --- BARU: Inisialisasi idleAnimation ---
         idleSpriteSheet = new Texture(idleSpriteSheetPath);
         TextureRegion[][] tmpIdle = TextureRegion.split(idleSpriteSheet,
             idleSpriteSheet.getWidth() / idleFrameCols,
@@ -65,14 +59,12 @@ public abstract class GameEntity implements Attackable, Renderable {
             }
         }
         idleAnimation = new Animation<TextureRegion>(idleFrameDuration, idleFrames);
-        // --- AKHIR BARU ---
 
         currentPlayingAnimation = idleAnimation; // Default ke animasi idle
         currentState = CharacterState.IDLE; // Default state
         stateTime = 0f;
     }
 
-    // Implementasi dari Attackable
     @Override
     public void takeDamage(int amount) {
         this.health -= amount;
@@ -82,7 +74,6 @@ public abstract class GameEntity implements Attackable, Renderable {
         System.out.println(this.getClass().getSimpleName() + " took " + amount + " damage. Health: " + this.health);
     }
 
-    // --- BARU: Tambahkan metode heal() di sini ---
     public void heal(int amount) {
         this.health += amount;
         if (this.health > maxHealth) {
@@ -90,7 +81,6 @@ public abstract class GameEntity implements Attackable, Renderable {
         }
         System.out.println(this.getClass().getSimpleName() + " healed for " + amount + ". Health: " + this.health);
     }
-    // --- AKHIR BARU ---
 
     public int getAttackPower() {
         return attackPower;
@@ -102,15 +92,17 @@ public abstract class GameEntity implements Attackable, Renderable {
     }
 
     @Override
-    public int getHealth() { return health; }
+    public int getHealth() {
+        return health;
+    }
+
     @Override
-    public int getMaxHealth() { return maxHealth; }
+    public int getMaxHealth() {
+        return maxHealth;
+    }
 
-
-    // Metode abstrak yang harus diimplementasikan oleh sub-kelas
     public abstract void attack(GameEntity target);
 
-    // --- BARU: setDyingAnimation() ---
     public void setDyingAnimation(String dyingSpriteSheetPath, int dyingFrameCols, int dyingFrameRows, float dyingFrameDuration) {
         if (this.dyingSpriteSheet != null) this.dyingSpriteSheet.dispose();
         this.dyingSpriteSheet = new Texture(dyingSpriteSheetPath);
@@ -125,7 +117,6 @@ public abstract class GameEntity implements Attackable, Renderable {
         }
         dyingAnimation = new Animation<TextureRegion>(dyingFrameDuration, dyingFrames);
     }
-    // --- AKHIR BARU ---
 
     public void setAttackAnimation(String attackSpriteSheetPath, int attackFrameCols, int attackFrameRows, float attackFrameDuration) {
         if (this.attackSpriteSheet != null) this.attackSpriteSheet.dispose(); // Dispose jika sudah ada
@@ -203,7 +194,6 @@ public abstract class GameEntity implements Attackable, Renderable {
     public CharacterState getCurrentState() {
         return currentState;
     }
-    // --- AKHIR BARU ---
 
     @Override
     public void render(SpriteBatch batch, float x, float y) {
@@ -214,12 +204,8 @@ public abstract class GameEntity implements Attackable, Renderable {
             return;
         }
 
-        // currentPlayingAnimation tidak boleh null. Jika null, akan error.
-        // Pastikan animasi idle selalu diinisialisasi di konstruktor.
         TextureRegion currentFrame = currentPlayingAnimation.getKeyFrame(stateTime, true); // true untuk looping (untuk idle)
 
-        // Untuk animasi ATTACKING atau HIT, biasanya tidak looping.
-        // GameScreen akan mendeteksi selesainya animasi ini.
         if (currentState == CharacterState.ATTACKING || currentState == CharacterState.HIT) {
             currentFrame = currentPlayingAnimation.getKeyFrame(stateTime, false); // false agar tidak looping
         }
@@ -227,8 +213,6 @@ public abstract class GameEntity implements Attackable, Renderable {
         batch.draw(currentFrame, x, y, displayWidth, displayHeight);
     }
 
-
- // MODIFIKASI: update() agar DYING tidak otomatis kembali ke IDLE
     public void update(float delta) {
         stateTime += delta;
 
@@ -239,13 +223,10 @@ public abstract class GameEntity implements Attackable, Renderable {
         }
     }
 
-
-
     @Override
     public void dispose() {
         if (idleSpriteSheet != null) idleSpriteSheet.dispose();
         if (attackSpriteSheet != null) attackSpriteSheet.dispose();
         if (hitSpriteSheet != null) hitSpriteSheet.dispose();
-        // Dispose sprite sheets lainnya jika ada
     }
 }

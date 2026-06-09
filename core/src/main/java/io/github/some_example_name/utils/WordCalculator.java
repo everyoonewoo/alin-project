@@ -1,24 +1,24 @@
 package io.github.some_example_name.utils;
 
 import com.badlogic.gdx.utils.Array;
-import io.github.some_example_name.tiles.Tile; // Import Tile
-import io.github.some_example_name.tiles.GemTile; // Import GemTile (spesifik untuk efek)
+import io.github.some_example_name.tiles.Tile;
+import io.github.some_example_name.tiles.GemTile;
 
-import io.github.some_example_name.tiles.FireTile; // BARU: Import FireTile
+import io.github.some_example_name.tiles.FireTile;
 
 public class WordCalculator {
     public static int calculateWordValue(Array<Tile> selectedTiles) {
-        int totalTileValues = 0; // Penjumlahan nilai dasar setiap tile (termasuk +2 dari FireTile)
+        int totalTileValues = 0; // Penjumlahan nilai dasar setiap tile (termasuk dari FireTile)
         int wordMultiplier = 1;
-        int fireTileDirectDamageBonus = 0; // BARU: Untuk bonus damage +5 dari FireTile
+        int fireTileDirectDamageBonus = 0;
 
         for (Tile tile : selectedTiles) {
-            totalTileValues ++; // Mengambil nilai dasar tile (yang sudah termasuk bonus +2 dari FireTile jika itu FireTile)
+            totalTileValues ++; // Mengambil nilai dasar tile (yang sudah termasuk bonus dari FireTile jika itu FireTile)
 
             if (tile instanceof GemTile) {
                 wordMultiplier *= ((GemTile) tile).getBonusMultiplier();
             } else if (tile instanceof FireTile) {
-                // Menambahkan bonus damage spesifik dari FireTile (yang bernilai 2)
+                // Menambahkan bonus damage spesifik dari FireTile
                 fireTileDirectDamageBonus += ((FireTile) tile).getBonusDamage();
             }
         }
